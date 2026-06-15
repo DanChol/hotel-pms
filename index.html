@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ЖайлооПМС — Управление гостиницей</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap');
+
+  :root {
+    --teal: #1D9E75;
+    --teal-light: #E1F5EE;
+    --teal-dark: #085041;
+    --amber: #BA7517;
+    --amber-light: #FAEEDA;
+    --text: #1a1a1a;
+    --muted: #6b7280;
+    --border: rgba(0,0,0,0.08);
+    --bg: #fafaf9;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* HERO */
+  .hero {
+    background: var(--teal-dark);
+    color: #fff;
+    padding: 56px 24px 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 240px; height: 240px;
+    border-radius: 50%;
+    background: rgba(93,202,165,0.15);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -40px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: rgba(93,202,165,0.1);
+  }
+  .hero-label {
+    display: inline-block;
+    background: rgba(93,202,165,0.2);
+    color: #9FE1CB;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 7vw, 52px);
+    line-height: 1.15;
+    margin-bottom: 12px;
+    position: relative;
+  }
+  .hero h1 span { color: #5DCAA5; }
+  .hero-sub {
+    font-size: 16px;
+    color: rgba(255,255,255,0.72);
+    max-width: 480px;
+    margin: 0 auto 32px;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat-num {
+    font-size: 28px;
+    font-weight: 600;
+    color: #5DCAA5;
+    display: block;
+  }
+  .hero-stat-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+  }
+
+  /* SECTIONS */
+  .section {
+    padding: 48px 24px;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 8px;
+  }
+  .section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 5vw, 32px);
+    line-height: 1.25;
+    margin-bottom: 16px;
+  }
+  .section p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* PROBLEM */
+  .problem-list {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .problem-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #fff;
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .problem-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .problem-text { font-size: 14px; color: var(--text); }
+  .problem-text strong { font-weight: 500; display: block; margin-bottom: 2px; }
+  .problem-text span { color: var(--muted); font-size: 13px; }
+
+  /* MODULES */
+  .modules-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .module-card {
+    background: #fff;
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .module-card.accent {
+    background: var(--teal-light);
+    border-color: rgba(29,158,117,0.2);
+  }
+  .module-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--teal-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  .module-card.accent .module-icon {
+    background: rgba(29,158,117,0.2);
+  }
+  .module-card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+  .module-card p {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* 1C BLOCK */
+  .odin-s {
+    background: var(--amber-light);
+    border: 0.5px solid rgba(186,117,23,0.2);
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 24px;
+  }
+  .odin-s-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--amber);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .odin-s p { font-size: 14px; color: #633806; line-height: 1.6; }
+  .odin-s-options {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .odin-s-opt {
+    background: rgba(255,255,255,0.6);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #412402;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .opt-badge {
+    background: var(--amber);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ROLES */
+  .roles-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .role-card {
+    background: #fff;
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .role-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+  .role-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .role-features { list-style: none; }
+  .role-features li {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 2px 0;
+    display: flex;
+    gap: 6px;
+    align-items: baseline;
+  }
+  .role-features li::before { content: '·'; color: var(--teal); font-weight: 700; }
+
+  /* WHY US */
+  .why-list {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .why-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .why-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--teal);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .why-text strong { font-size: 14px; font-weight: 600; display: block; margin-bottom: 2px; }
+  .why-text span { font-size: 13px; color: var(--muted); }
+
+  /* DIVIDER */
+  .divider {
+    height: 0.5px;
+    background: var(--border);
+    margin: 0 24px;
+  }
+
+  /* CTA */
+  .cta {
+    background: var(--teal);
+    color: #fff;
+    text-align: center;
+    padding: 48px 24px;
+  }
+  .cta h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 5vw, 30px);
+    margin-bottom: 10px;
+  }
+  .cta p { font-size: 15px; opacity: 0.8; margin-bottom: 28px; }
+  .cta-btn {
+    display: inline-block;
+    background: #fff;
+    color: var(--teal-dark);
+    font-weight: 600;
+    font-size: 15px;
+    padding: 14px 32px;
+    border-radius: 50px;
+    text-decoration: none;
+    margin: 4px;
+  }
+  .cta-btn.outline {
+    background: transparent;
+    color: #fff;
+    border: 1.5px solid rgba(255,255,255,0.5);
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 0.5px solid var(--border);
+  }
+
+  @media (max-width: 380px) {
+    .modules-grid { grid-template-columns: 1fr; }
+    .roles-row { grid-template-columns: 1fr; }
+    .hero-stats { gap: 20px; }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .fade-in {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">Иссык-Куль · Каракол · КР</div>
+  <h1>Управляй гостиницей<br><span>умно и просто</span></h1>
+  <p class="hero-sub">Первая PMS-система, созданная специально для гостевых домов, хостелов и отелей Кыргызстана</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <span class="hero-stat-num">8</span>
+      <span class="hero-stat-label">модулей в одном</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-num">На кыр/рус</span>
+      <span class="hero-stat-label">интерфейс</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-num">1C</span>
+      <span class="hero-stat-label">не нужна</span>
+    </div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<div class="section fade-in">
+  <div class="section-label">Проблема</div>
+  <h2>Как сейчас ведут учёт большинство отелей?</h2>
+  <p>Тетрадки, Excel, WhatsApp-группы, разрозненные таблицы. Информация теряется, ошибки стоят денег.</p>
+  <div class="problem-list">
+    <div class="problem-item">
+      <div class="problem-icon">📒</div>
+      <div class="problem-text">
+        <strong>Тетрадки и Excel</strong>
+        <span>Двойное бронирование, потеря данных гостей, ручной пересчёт выручки</span>
+      </div>
+    </div>
+    <div class="problem-item">
+      <div class="problem-icon">💬</div>
+      <div class="problem-text">
+        <strong>WhatsApp для задач горничных</strong>
+        <span>Задачи теряются, статус уборки неизвестен, конфликты при заселении</span>
+      </div>
+    </div>
+    <div class="problem-item">
+      <div class="problem-icon">🧮</div>
+      <div class="problem-text">
+        <strong>Финансы вручную</strong>
+        <span>Нет понимания реальной прибыли, налоги считаются отдельно, зарплата на листочке</span>
+      </div>
+    </div>
+    <div class="problem-item">
+      <div class="problem-icon">🌍</div>
+      <div class="problem-text">
+        <strong>Западные системы не подходят</strong>
+        <span>Дорого ($17–50 за номер/мес), только на английском, не знают налоги КР</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- MODULES -->
+<div class="section fade-in">
+  <div class="section-label">Решение</div>
+  <h2>Все инструменты управления — в одной системе</h2>
+  <p>Восемь модулей, которые работают вместе и видят одни данные в реальном времени.</p>
+  <div class="modules-grid">
+    <div class="module-card accent">
+      <div class="module-icon">🏨</div>
+      <h3>Карта номеров</h3>
+      <p>Занят / свободен / уборка — вся гостиница на одном экране</p>
+    </div>
+    <div class="module-card">
+      <div class="module-icon">📅</div>
+      <h3>Бронирования</h3>
+      <p>Прямые, Booking.com, Airbnb — всё в одном календаре</p>
+    </div>
+    <div class="module-card">
+      <div class="module-icon">🧹</div>
+      <h3>Горничные</h3>
+      <p>Задачи на телефон, QR-статус номера, отчёт об уборке</p>
+    </div>
+    <div class="module-card">
+      <div class="module-icon">👥</div>
+      <h3>CRM гостей</h3>
+      <p>История визитов, предпочтения, отзывы и лояльность</p>
+    </div>
+    <div class="module-card">
+      <div class="module-icon">🍽️</div>
+      <h3>Кухня / бар</h3>
+      <p>Заказы из номеров, склад, связь с кассой</p>
+    </div>
+    <div class="module-card">
+      <div class="module-icon">👔</div>
+      <h3>Персонал</h3>
+      <p>График смен, поручения, внутренний чат</p>
+    </div>
+    <div class="module-card">
+      <div class="module-icon">💰</div>
+      <h3>Финансы</h3>
+      <p>Доходы, расходы, налоги КР, зарплатная ведомость</p>
+    </div>
+    <div class="module-card">
+      <div class="module-icon">📊</div>
+      <h3>Аналитика</h3>
+      <p>Заполняемость, выручка, сезонные отчёты, экспорт</p>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- 1C -->
+<div class="section fade-in">
+  <div class="section-label">Бухгалтерия</div>
+  <h2>1С не нужна — всё внутри</h2>
+  <p>Финансовый модуль уже включает всё необходимое для Кыргызстана. Но если у вас уже есть 1С — мы умеем с ней работать.</p>
+  <div class="odin-s">
+    <div class="odin-s-title">⚙️ Два варианта — на ваш выбор</div>
+    <p>Большинству гостиниц 1С вообще не нужна. Наш модуль финансов закрывает всё что нужно.</p>
+    <div class="odin-s-options">
+      <div class="odin-s-opt">
+        <span class="opt-badge">★ Рекомендуем</span>
+        <div><strong style="display:block;margin-bottom:3px;font-size:13px">Встроенная бухгалтерия</strong>
+        Налоги по КР (ОРС, НДС, патент), зарплата, касса, отчёты — всё уже внутри системы. Дешевле и проще.</div>
+      </div>
+      <div class="odin-s-opt">
+        <span class="opt-badge" style="background:#888">Опция</span>
+        <div><strong style="display:block;margin-bottom:3px;font-size:13px">Интеграция с 1С</strong>
+        Если у вас уже стоит 1С:Бухгалтерия — подключим через API. Данные по оплатам и гостям будут синхронизироваться автоматически.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ROLES -->
+<div class="section fade-in">
+  <div class="section-label">Роли</div>
+  <h2>Каждый видит только своё</h2>
+  <p>Разные экраны для владельца, менеджера, ресепшниста и горничной.</p>
+  <div class="roles-row">
+    <div class="role-card">
+      <div class="role-avatar" style="background:#EAF3DE">👑</div>
+      <h3>Владелец</h3>
+      <ul class="role-features">
+        <li>Выручка и прибыль</li>
+        <li>Все отчёты</li>
+        <li>Налоги и зарплата</li>
+        <li>Управление персоналом</li>
+      </ul>
+    </div>
+    <div class="role-card">
+      <div class="role-avatar" style="background:#E6F1FB">💼</div>
+      <h3>Менеджер</h3>
+      <ul class="role-features">
+        <li>Карта номеров</li>
+        <li>Бронирования</li>
+        <li>Задачи персоналу</li>
+        <li>Отчёт по смене</li>
+      </ul>
+    </div>
+    <div class="role-card">
+      <div class="role-avatar" style="background:#FAEEDA">🔑</div>
+      <h3>Ресепшн</h3>
+      <ul class="role-features">
+        <li>Check-in / out</li>
+        <li>Карта номеров</li>
+        <li>Приём оплат</li>
+        <li>Гости сегодня</li>
+      </ul>
+    </div>
+    <div class="role-card">
+      <div class="role-avatar" style="background:#E1F5EE">🧹</div>
+      <h3>Горничная</h3>
+      <ul class="role-features">
+        <li>Задачи на телефон</li>
+        <li>QR-статус номера</li>
+        <li>Фото отчёт</li>
+        <li>Приоритеты уборки</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- WHY KG -->
+<div class="section fade-in">
+  <div class="section-label">Почему именно нам</div>
+  <h2>Сделано для рынка Кыргызстана</h2>
+  <p>Это не перевод западного продукта. Это система, созданная под реалии местного рынка.</p>
+  <div class="why-list">
+    <div class="why-item">
+      <div class="why-num">1</div>
+      <div class="why-text">
+        <strong>Кыргызский и русский язык</strong>
+        <span>Интерфейс на двух языках. Любой сотрудник разберётся без обучения.</span>
+      </div>
+    </div>
+    <div class="why-item">
+      <div class="why-num">2</div>
+      <div class="why-text">
+        <strong>Налоги КР встроены</strong>
+        <span>ОРС, НДС, патентная система — всё рассчитывается автоматически.</span>
+      </div>
+    </div>
+    <div class="why-item">
+      <div class="why-num">3</div>
+      <div class="why-text">
+        <strong>Сезонный режим</strong>
+        <span>Лето — активный режим. Зима — система в спячке, платить не нужно.</span>
+      </div>
+    </div>
+    <div class="why-item">
+      <div class="why-num">4</div>
+      <div class="why-text">
+        <strong>Цена в сомах, не в долларах</strong>
+        <span>Фиксированная абонплата. Без курсовых рисков и скрытых платежей.</span>
+      </div>
+    </div>
+    <div class="why-item">
+      <div class="why-num">5</div>
+      <div class="why-text">
+        <strong>Поддержка на месте</strong>
+        <span>Каракол. Приедем, настроим, обучим персонал лично.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta">
+  <h2>Хотите попробовать первыми?</h2>
+  <p>Ищем 2–3 гостиниц для пилотного запуска. Первые участники получат скидки.</p>
+  <a href="https://wa.me/+996550005901" class="cta-btn">Написать в WhatsApp</a>
+  <a href="mailto:nurtender5@gmail.com" class="cta-btn outline">Отправить email</a>
+</div>
+
+<footer>
+  © 2025 ЖайлооПМС · Каракол, Кыргызстан · Система управления гостиничным бизнесом
+</footer>
+
+<script>
+  const els = document.querySelectorAll('.fade-in');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  els.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
